@@ -1,0 +1,397 @@
+\documentclass{lecturenotes}
+
+\renewcommand{\vecka}{3}
+\newcommand{\tema}{Systemutveckling}
+
+\setbeamertemplate{footline}[frame number]
+\title[Föreläsningsanteckningar EDA016, 2015]{EDA016 Programmeringsteknik för D}
+\subtitle{Läsvecka \vecka: \tema}
+\author{Björn Regnell}
+\institute{Datavetenskap, LTH}
+\date{Lp1-2, HT 2015}
+ 
+\begin{document}
+
+\frame{\titlepage}
+\setnextsection{\vecka}
+\section[Vecka \vecka: \tema]{\tema}
+\frame{\tableofcontents}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Att göra denna vecka}
+\frame{\frametitle{Att göra i Vecka \vecka: Förstå hur systemutveckling går till med klasser och objekt i en integrerad utvecklingsmiljö}
+\begin{enumerate}
+\item Läs följande kapitel i kursboken:\\ 2.7--2.10, 3.3--3.12\\ 
+ Begrepp: klass, objekt, referensvariabel, instans, konstruktor, parameter, argument, aktiveringspost, stack, null, attribut, skräpsamlare,  synlighet, public, private, överskuggning, specifikation, this, final, oföränderlighet, IDE, arbetsområde, avlusare, brytpunkt
+\item Gör övning 3: beräkningar, klasser och objekt
+\item Träffas i samarbetsgrupper och hjälp varandra förstå 
+\item Gör Lab 2: Eclipse
+\end{enumerate}
+}
+
+\Subsection{Klasser och objekt}
+
+\begin{Slide}{Klasser och objekt}
+Några viktiga begrepp:
+\begin{itemize}
+\item En \Emph{klass} samlar variabler och kod som hör ihop. \\ 
+  \lstinline+class Klassnamn {/* klassmedlemmar*/ } +
+ \item En klass är en mall som kan användas för att skapa \Emph{objekt}. \\  
+   \lstinline+Klassnamn referensvariabelnamn = new Klassnamn(); +
+\item Varje gång man gör \Key{new} skapas en nytt objekt.\\ 
+Objektet kallas även en \Emph{instans} av klassen.
+\item Objektens variabler kallas \Emph{instansvariabler} och finns i en ny upplaga för varje instans och kan ha olika värden.
+\item Om man deklarerar en variabel \Key{static} kallas den för \Emph{klassvariabel} och den finns i en enda upplaga som är gemensam för alla objekt.
+\end{itemize}
+\end{Slide}
+
+\begin{Slide}{Objekt och referensvariabler}
+\lstinputlisting[language=Java,numbers=left]{../examples/terminal/refvars/ReferenceVariables.java}
+\end{Slide}
+
+\begin{Slide}{Objekt och referensvariabler}
+\begin{lstlisting}[numbers=left, firstnumber=7]
+        Gurka g1 = new Gurka();
+        Gurka g2 = new Gurka();
+\end{lstlisting}
+Efter rad 8 ser det ut såhär i minnet:
+\\ \vspace{1em}
+\begin{tikzpicture}[font=\large\sffamily]
+\matrix [matrix of nodes, row sep=0, column 2/.style={nodes={rectangle,draw,minimum width=3em}}] (mat)
+{
+\texttt{g1}   &  \makebox(16,12){ }\\
+\texttt{g2}   &  \makebox(16,12){ }\\
+};
+\node[cloud, cloud puffs=15.7, cloud ignores aspect, %minimum width=5cm, minimum height=2cm,
+ align=center, draw] (g1) at (4cm, 1cm) {Gurka-\\objekt};
+\filldraw[black] (0.4cm,0.4cm) circle (3pt) node[] (g1ref) {};
+ \draw [arrow] (g1ref) -- (g1);
+ \node[cloud, cloud puffs=15.7, cloud ignores aspect, %minimum width=5cm, minimum height=2cm,
+ align=center, draw] (g2) at (5cm, -2cm) {Gurka-\\objekt};
+ \filldraw[black] (0.4cm,-0.4cm) circle (3pt) node[] (g2ref) {};
+ \draw [arrow] (g2ref) -- (g2);
+\end{tikzpicture}
+\end{Slide}
+
+
+\begin{Slide}{Objekt och referensvariabler}
+\begin{lstlisting}[numbers=left, firstnumber=7]
+        Gurka g1 = new Gurka();
+        Gurka g2 = new Gurka();
+\end{lstlisting}
+\scriptsize En mer detaljerad bild av minnet efter rad 8:
+\\ \vspace{1em}
+\tikzstyle{mybox} = [draw=red, fill=blue!20, very thick,
+    rectangle, rounded corners, inner sep=10pt, inner ysep=20pt]
+\begin{tikzpicture}[
+      scale = 0.8, every node/.style={transform shape},
+	font=\large\sffamily, 
+	varname/.style={node distance=0.2cm},
+	varbox/.style={draw, node distance=0.2cm},
+	objcloud/.style={cloud, cloud puffs=15.7, cloud ignores aspect, align=center, draw},
+]
+
+\node [varname] (g1var) {\texttt{g1}};
+\node [varbox, right = of g1var] (g1ref) {\phantom{abc}};
+\filldraw[black] (g1ref) circle (3pt) node[] (g1dot) {};
+\node [objcloud, right = of g1ref, yshift=1.0cm, scale =0.8] (g1obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{100}
+};
+\draw [arrow] (g1dot) -- (g1obj);
+
+\node [varname, below = of g1var] (g2var) {\texttt{g2}};
+\node [varbox, right = of g2var] (g2ref) {\phantom{abc}};
+\filldraw[black] (g2ref) circle (3pt) node[] (g2dot) {};
+\node [objcloud, right = of g2ref, yshift=-1.0cm, scale =0.8] (g2obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{100}
+};
+\draw [arrow] (g2dot) -- (g2obj);
+
+\end{tikzpicture}
+
+\pause\scriptsize Referensvariablerna \texttt{g1} och \texttt{g2} pekar på \textit{olika} objekt, sålunda är uttrycket \texttt{g1 == g2} \Key{false}, även om objektens \textit{innehåll} är lika och \texttt{g1.vikt == g2.vikt}  är \Key{true}.
+\end{Slide}
+
+
+\begin{Slide}{Punktnotation för att komma åt klassmedlemmar}
+\begin{lstlisting}[numbers=left, firstnumber=9]
+        g2.vikt = 200;
+\end{lstlisting}
+Efter rad 9 ser det ut såhär i minnet:
+\\ \vspace{1em}
+\tikzstyle{mybox} = [draw=red, fill=blue!20, very thick,
+    rectangle, rounded corners, inner sep=10pt, inner ysep=20pt]
+\begin{tikzpicture}[
+      scale = 0.8, every node/.style={transform shape},
+	font=\large\sffamily, 
+	varname/.style={node distance=0.2cm},
+	varbox/.style={draw, node distance=0.2cm},
+	objcloud/.style={cloud, cloud puffs=15.7, cloud ignores aspect, align=center, draw},
+]
+
+\node [varname] (g1var) {\texttt{g1}};
+\node [varbox, right = of g1var] (g1ref) {\phantom{abc}};
+\filldraw[black] (g1ref) circle (3pt) node[] (g1dot) {};
+\node [objcloud, right = of g1ref, yshift=1.0cm, scale =0.8] (g1obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{100}
+};
+\draw [arrow] (g1dot) -- (g1obj);
+
+\node [varname, below = of g1var] (g2var) {\texttt{g2}};
+\node [varbox, right = of g2var] (g2ref) {\phantom{abc}};
+\filldraw[black] (g2ref) circle (3pt) node[] (g2dot) {};
+\node [objcloud, right = of g2ref, yshift=-1.0cm, scale =0.8] (g2obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{200}
+};
+\draw [arrow] (g2dot) -- (g2obj);
+
+\end{tikzpicture}
+\end{Slide}
+
+\begin{Slide}{Automatisk skräpsamling i minnet}
+Antag att vi efter skapandet av våra gurkor hade gjort:
+\begin{lstlisting}
+g2 = g1;  // g2 och g1 pekar efter denna sats på samma objekt
+\end{lstlisting}
+Då hade det sett ut så här i minnet: \\ \vspace{1em}
+
+\tikzstyle{mybox} = [draw=red, fill=blue!20, very thick,
+    rectangle, rounded corners, inner sep=10pt, inner ysep=20pt]
+\begin{tikzpicture}[
+      scale = 0.75, every node/.style={transform shape},
+	font=\large\sffamily, 
+	varname/.style={node distance=0.2cm},
+	varbox/.style={draw, node distance=0.2cm},
+	objcloud/.style={cloud, cloud puffs=15.7, cloud ignores aspect, align=center, draw},
+]
+
+\node [varname] (g1var) {\texttt{g1}};
+\node [varbox, right = of g1var] (g1ref) {\phantom{abc}};
+\filldraw[black] (g1ref) circle (3pt) node[] (g1dot) {};
+\node [objcloud, right = of g1ref, yshift=1.0cm, scale =0.8] (g1obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{100}
+};
+\draw [arrow] (g1dot) -- (g1obj);
+
+\node [varname, below = of g1var] (g2var) {\texttt{g2}};
+\node [varbox, right = of g2var] (g2ref) {\phantom{abc}};
+\filldraw[black] (g2ref) circle (3pt) node[] (g2dot) {};
+\node [objcloud, right = of g2ref, yshift=-1.0cm, scale =0.8] (g2obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{200}
+};
+\draw [arrow] (g2dot) -- (g1obj);
+
+\node [right = of g2obj] {Ingen kan komma åt detta objekt $\rightarrow$ skräp};
+\end{tikzpicture}
+ \scriptsize\href{https://sv.wikipedia.org/wiki/Skr\%C3\%A4psamling}{Skräpsamlaren} frigör så småningom minne som ockuperas av objekt utan referenser.
+\end{Slide}
+
+\begin{Slide}{Referens som inte refererar till något: \texttt{\textbf{null}}}
+Nyckelordet \Key{null} används för att beteckna \href{http://www.programcreek.com/2013/12/what-exactly-is-null-in-java/}{saknad referens}.
+\begin{lstlisting}
+g1 = null;  // g1 pekar efter denna sats inte på något objekt
+\end{lstlisting}
+\tikzstyle{mybox} = [draw=red, fill=blue!20, very thick,
+    rectangle, rounded corners, inner sep=10pt, inner ysep=20pt]
+\begin{tikzpicture}[
+      scale = 0.75, every node/.style={transform shape},
+	font=\large\sffamily, 
+	varname/.style={node distance=0.2cm},
+	varbox/.style={draw, node distance=0.2cm},
+	objcloud/.style={cloud, cloud puffs=15.7, cloud ignores aspect, align=center, draw},
+]
+
+\node [varname] (g1var) {\texttt{g1}};
+\node [varbox, right = of g1var] (g1ref) {\scriptsize\Key{null}};
+
+\node [objcloud, right = of g1ref, yshift=1.0cm, scale =0.8] (g1obj) {
+	\texttt{\textbf{Gurka}} \\~\\ \texttt{vikt} \framebox{100}
+};
+
+\node [varname, below = of g1var] (g2var) {\texttt{g2}};
+\node [varbox, right = of g2var] (g2ref) {\phantom{abc}};
+\filldraw[black] (g2ref) circle (3pt) node[] (g2dot) {};
+
+\draw [arrow] (g2dot) -- (g1obj);
+
+
+\end{tikzpicture} \\ \vspace{1em}
+
+\scriptsize Om det finns risk för att en referensvariabel är \Key{null} måste man kolla detta i en if-sats innan man försöker komma åt medlemmarna i objektet med punktnotation, annars får man ett felmeddelande. \\ \vspace{1em} Vilket felmeddelande skrivs ut? Smäller det vid compile-time eller run-time?\\ Hur kan if-satsen som kollar om inte null ut?
+\end{Slide}
+
+
+\Subsection{Metoder och parametrar}
+
+\begin{Slide}{Deklarera och anropa metoder}
+\lstinputlisting[language=Java,basicstyle=\ttfamily\tiny\selectfont, numberstyle=, numbers=left,]{../examples/terminal/methods/MethodExamples.java}
+\end{Slide}
+
+\begin{Slide}{Parametrar}
+\lstinputlisting[language=Java,basicstyle=\ttfamily\tiny\selectfont, numberstyle=, numbers=left,]{../examples/terminal/methods/MethodWithParameter.java}
+\end{Slide}
+
+\begin{Slide}{Aktiveringspost med argument läggs på \href{https://sv.wikipedia.org/wiki/Stack_\%28mikroprocessor\%29}{stacken}}
+\lstinputlisting[language=Java,basicstyle=\ttfamily\tiny\selectfont, numberstyle=, numbers=left,]{../examples/terminal/methods/ActivationRecord.java}
+\end{Slide}
+
+\Subsection{Synlighet}
+\begin{Slide}{Varför styra synlighet?}
+I storskalig systemutveckling utvecklas en stor kodbas som många människor ska läsa och bidra till...
+\begin{itemize}
+\item Då är det praktiskt med \href{https://en.wikipedia.org/wiki/Local_variable}{lokala} namn som inte ''krockar''; \\det vore \textit{mycket opraktiskt} om man hela tiden måste hitta på globalt unika namn
+\item Om man kan \href{https://en.wikipedia.org/wiki/Encapsulation_\%28computer_programming\%29}{kapsla in} variabler så att de inte går att komma åt från andra delar av koden, förhindrar man att  någon ''utifrån'' av misstag ändrar på en variabel och därmed sänks risken för räliga buggar
+\end{itemize}
+\end{Slide}
+
+\begin{Slide}{Public, private och protected}
+Nyckelord för att styra \href{http://stackoverflow.com/questions/215497/in-java-whats-the-difference-between-public-default-protected-and-private}{synlighet} i Java:
+\begin{itemize}
+\item Med \Key{private} förhindrar man att namn syns ''utanför'' klassen
+\item Med \Key{public} gör namn tillgängliga ''utåt'', för alla andra klasser och paket i kodbasen
+\item Med \Key{protected} begränsas synligheten till egna paketet och egna subklasser\footnote{Mer om subklasser när vi kommer till arv (inheritance)}
+\item Om man inget skriver, syns namnen i det egna paketet men inte i egna subklasser
+\end{itemize}
+\end{Slide}
+
+\begin{Slide}{Gör attribut privata och slipp oönskade förändringar!}
+\lstinputlisting[language=Java,basicstyle=\ttfamily\tiny\selectfont, numberstyle=, numbers=left,]{../examples/terminal/visibility/PrivateAttribute.java}
+\end{Slide}
+
+\Subsection{Konstruktorer}
+\begin{Slide}{Använd konstruktor för att ge attribut startvärden}
+\begin{itemize}
+\item När ett objekt skapas anropas en \href{https://docs.oracle.com/javase/tutorial/java/javaOO/constructors.html}{konstruktor}
+\item En deklaration av en konstruktor liknar en metoddeklaration, men namnet ska vara samma som klassen och ingen  returtyp får anges \\ \lstinline+  public Klassnamn(parametrar) { ... } +
+\end{itemize}
+\begin{lstlisting}[]
+public class Gurka {
+    private int vikt;  
+
+    public Gurka(){  // en konstruktor utan parameter
+       vikt = 100;
+    } 
+    
+    public Gurka(int startVikt){  // en konstruktor med parameter
+       vikt = startVikt;
+    } 
+}
+\end{lstlisting}
+\end{Slide}
+
+\begin{Slide}{Lokala namn, överskuggning och \texttt{\textbf{this}}}
+\scriptsize Vad händer här? OBS! Tre \textit{olika} variabler, men samma namn...
+\lstinputlisting[language=Java,basicstyle=\ttfamily\tiny\selectfont, numberstyle=, numbers=left,]{../examples/terminal/localvars/LocalVar.java}
+\end{Slide}
+
+\begin{Slide}{Komma runt överskuggning i konstruktor med \texttt{\textbf{this}}}
+\begin{lstlisting}[]
+public class Gurka {
+    private int vikt;  
+
+    public Gurka(int vikt){//parameterns namn krockar med attributet
+       this.vikt = vikt;
+    } 
+}
+\end{lstlisting}
+Nyckelordet \Key{this} ger oss en referens till instansen. \\
+Med punktnotation kan vi komma åt attributet vars namn överskuggas av parameternamnet.
+\end{Slide}
+
+\begin{Slide}{Exempel: implementation av klass}
+\scriptsize I filen \texttt{Cucumber.java}
+\lstinputlisting[language=Java,basicstyle=\ttfamily\fontsize{5.7}{6.5}\selectfont, numberstyle=, numbers=left,]{../examples/terminal/constructor/Cucumber.java}
+\end{Slide}
+
+\begin{Slide}{Exempel: test av klass-implementation}
+\scriptsize Kör \texttt{main}-metoden klassen \texttt{CucumberTest} 
+\lstinputlisting[language=Java,basicstyle=\ttfamily\scriptsize\selectfont, numberstyle=, numbers=left,]{../examples/terminal/constructor/CucumberTest.java}
+\begin{itemize}
+\item Vad skriver programmet ut?
+\item Lägg till kod i \texttt{CucumberTest} som testar vad som händer om man äter en negativ tugga. Förklara resultatet.
+\item Hur vet vi vad som är ''rätt'' beteende? \pause Kolla specifikationen (om sådan finns)
+\end{itemize}
+\end{Slide}
+
+\subsection{Specifikation versus implementation}
+\begin{Slide}{En möjlig specifikation av klassen Cucumber}
+\footnotesize Så här vill författaren av denna specifikation att vår gurk-klass ska fungera:
+\begin{lstlisting}[backgroundcolor=,rulecolor=\color{black}, title={\texttt{Cucumber}}, frameround=tttt,language=]
+/** Skapar en gurka som väger startWeight gram. 
+    Om startWeight är negativt blir gurkans vikt 0.  */
+Cucumber(int startWeight);
+
+/** Returnerar gurkans vikt i gram */
+int getWeight();
+
+/** Minskar gurkans vikt med bite gram. 
+    Om bite är större än vikten blir gurkans vikt 0. */
+void eat(int bite);
+
+/** Skriver ut gurkans vikt */
+void show();
+\end{lstlisting}
+Observera att implementationsdetaljer \textit{inte} visas, t.ex. är namnet på det privata attributet ej definierat av specifikationen.
+\end{Slide}
+
+\begin{Slide}{Implementera klass baserat på specifikation} \footnotesize
+Ofta upptäcker man oklarheter med specifikationen när man försöker implementera den.
+\begin{itemize}
+\item Vad händer om man tar en ''negativ tugga'' av gurkan? \\
+Är det ett problem i praktiken eller kan vi strunta i detta specialfall?
+\end{itemize}
+Se olika versioner av implementationen av Cucumber:
+\begin{itemize}
+\item Versionen med en bugg i konstruktorn: \href{https://github.com/bjornregnell/lth-eda016-2015/blob/master/lectures/examples/terminal/constructor/Cucumber.java}{\texttt{Cucumber.java}}
+\item Versionen med buggfixad konstruktor: \href{https://github.com/bjornregnell/lth-eda016-2015/blob/master/lectures/examples/terminal/constructor/bugfix1/Cucumber.java}{\texttt{bugfix1/Cucumber.java}}
+\item Versionen som ej tillåter negativa bett men med en ny rälig bugg i konstruktorn: \href{https://github.com/bjornregnell/lth-eda016-2015/blob/master/lectures/examples/terminal/constructor/bugfix2/Cucumber.java}{\texttt{bugfix2/Cucumber.java}}
+\item Versionen med buggar fixade och dokumentationskommentarer enligt specifikationen (som bör uppdateras för specialfallet med negativa bett): \href{https://github.com/bjornregnell/lth-eda016-2015/blob/master/lectures/examples/terminal/constructor/bugfix3/Cucumber.java}{\texttt{bugfix3/Cucumber.java}}
+\end{itemize}
+\end{Slide}
+
+\begin{Slide}{Krav -- Design -- Implementation -- Test}\footnotesize
+\begin{itemize}
+\item \Emph{Krav} \\ Varför skriver vi koden? Vad är viktigast att utveckla först? \\ Hur vill vi att systemet ska fungera ur användarens perspektiv? \\  \href{http://cs.lth.se/ets170}{ETS170} Kravhantering
+\item \Emph{Design} \\ Hur ska vi organisera koden i olika delar? \\ Varför ska vi ha just dessa delar?  \\  \href{http://cs.lth.se/eda061}{EDA061} Objektorienterad modellering och design
+\item \Emph{Implementation} \\ Hur ska vi skriva koden? \\ Vilka specifika algoritmer? \\ 
+\href{http://cs.lth.se/eda016}{EDA016}, \href{http://cs.lth.se/edaa01vt}{EDAA01} Programmeringsteknik -- fördjupningskurs, m.fl.
+\item \Emph{Test} \\ Hur ska vi säkerställa att det funkar? \\ Vilka testfall ska vi köra och hur ofta? \\  \href{http://cs.lth.se/ets200}{ETS200} Programvarutestning
+\end{itemize}
+\end{Slide}
+
+\Subsection{Integrerad utvecklingsmiljö}
+
+\begin{Slide}{Integrated Development Environment (IDE)} \footnotesize
+En integrerad utvecklingsmiljö gör det lätt att 
+\begin{itemize}
+\item editera, (med en massa avancerad hjälp medan du skriver)
+\item kompilera, 
+\item exekvera och 
+\item avlusa  
+\end{itemize} 
+din kod i en och samma app. \\ \vspace{1em}
+Exempel på två populära IDE:s som är öppen källkod:
+\begin{itemize}
+\item \href{https://eclipse.org/}{Eclipse} används i många av våra kurser.
+\item \href{https://www.jetbrains.com/idea/}{Jetbrains IntelliJ IDEA} används t.ex. vid Android-utveckling
+\end{itemize}
+Ladda ner Eclipse Java SE version Mars till din egen dator \href{http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/marsr}{här}. \\ 
+Ladda ner kursens workspace: \url{http://cs.lth.se/ws} \\
+Inför lab 2: Läs i kompendiet ''Eclipse -- en handledning'' 
+\end{Slide}
+
+\subsection{Code@LTH-event tors. 17 september, 18:00 – 20:00}
+\begin{Slide}{Code@LTH-event om git, GitHub och Bitbucket}\footnotesize
+Koda tillsammans och dela med dig:
+\begin{itemize}
+\item \href{https://git-scm.com/}{git} är en populär versionshanterare som sparar alla ändringar  och gör det möjligt att synka dina kod med andra som du samarbetar med
+\item \href{https://github.com/}{GitHub} är en lagringsplats på nätet där du kan lagra din kod i ett \href{https://en.wikipedia.org/wiki/Repository_\%28version_control\%29}{repositorium}. Affärsmodell: gratis om öppet repo, betala om stängt repo
+\item \href{https://bitbucket.org/}{Bitbucket} är ett alternativ till GitHub. Affärsmodell: gratis med både öppna och stängda repo, men det kostar om ni är fler än 5 per repo.
+\item Registrera er dig båda nu och paxa ditt användarnamn! \\ Använd t.ex. GitHub för öppna repo och Bitbucket för stängda repo. 
+\item Alla måste genast stjärnmarkera \href{https://github.com/bjornregnell/lth-eda016-2015}{kursens repo} :) 
+\end{itemize}
+Anmäl dig till \href{http://www.codeatlth.org/}{Code@LTH-eventet} om git, GitHub och Bitbucket\\torsdagen den 17 september klockan 18:00 – 20:00
+\end{Slide}
+
+\end{document}

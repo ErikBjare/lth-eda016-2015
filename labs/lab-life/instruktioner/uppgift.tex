@@ -22,7 +22,7 @@ sker samtidigt över hela rutnätet.
 \item \textit{Födelse}. I en tom ruta gränsande till exakt 3 individer föds en individ.
 \end{enumerate}
 
-Varje ruta i rutnätet har 8 grannrutor, dessa grannrutor kallas för ''Moore grannskap'' eller \href{https://en.wikipedia.org/wiki/Moore_neighborhood}{''Moore neighborhood''}. Även de diagonalt intilliggande rutorna betraktas alltså som grannrutor. (De fyra direkt intilliggande grannarna, alltså med diagonalerna undantagna, kallas för \href{https://en.wikipedia.org/wiki/Von_Neumann_neighborhood}{''Von Neumann grannskap''}.
+Varje ruta i rutnätet har 8 grannrutor. Även de diagonalt intilliggande rutorna betraktas alltså som grannrutor.
 
 Exempel på fyra på varandra följande generationer i Life-spelet (individerna markeras
 med fyllda rutor):
@@ -173,49 +173,41 @@ konfiguration). Observera att spelplanen behöver vara större än vad som visas
 Mer att läsa om ''Conway's Game of Life'' och fler exempel att prova finns på nätet. Använd t. ex. sökorden "Conway game of life".
 
 	\subsection*{Checklista}
-	I den här laborationen har du övat på att
-	\begin{itemize}
-		\item använda matriser,
-		
-		\item spara och ändra tillståndet hos en spelplan,
-		
-		\item använda logiska värden och skriva logiska uttryck, och
-		
-		\item strukturerat dela upp funktionalitet mellan klasser.
-	\end{itemize}
+        I den här laborationen har du övat på att
+        \begin{itemize}
+            \item använda matriser,
 
-        \subsection{Extrauppgifter och fördjupningslänkar}
+            \item spara och ändra tillståndet hos en spelplan,
 
+            \item använda logiska värden och skriva logiska uttryck, och
+
+            \item strukturerat dela upp funktionalitet mellan klasser.
+        \end{itemize}
+
+    \subsection{Extrauppgifter och fördjupningslänkar}
 
         % What to include here?
         % What is most interesting?
         % What can be implemented, and what is just plain interesting? (Perhaps divide it up into two parts)
-        
-        % Simple variations on the Game of Life rule (2 states, Moore neighborhood)
+
+        % Simple variations on the Game of Life rule
         \begin{itemize}
                 \item \href{https://en.wikipedia.org/wiki/Conway's_Game_of_Life}{Conway's Game of Life (Wikipedia)}
                 \item \href{https://en.wikipedia.org/wiki/Highlife_(cellular_automaton)}{Highlife} - A simple variation on Life rules which has been of interest due to the prescence of a simple replicator pattern.
-        \end{itemize}
-        
-        % Other cellular automata with rules significantly different from Game of Life (≥2 states, not necessarily using the Moore neighborhood)
-        \begin{itemize}
-                \item \href{https://en.wikipedia.org/wiki/Day_and_Night_(cellular_automaton)}{Day and Night}
-                \item \href{https://en.wikipedia.org/wiki/Wireworld}{Wireworld (Wikipedia)} - Cellular automata that enables the building of wires and patterns mimicking electronic components such as transistors and diodes.
-                \item \href{https://en.wikipedia.org/wiki/Cyclic cellular automata}{Cyclic cellular automata} - A type of cellular automaton where each cell has a value in $\{0, \dots, N\}$, taking the value of any neighboring cell if they have the value $n+1 \% N$ where $n \eq \text{value of the current cell}$.
-                \item \href{https://en.wikipedia.org/wiki/Von_Neumann_cellular_automaton}{Von Neuman cellular automaton}
         \end{itemize}
 
         % Concepts in cellular automata
         \begin{itemize}
                 \item \href{https://en.wikipedia.org/wiki/Garden_of_Eden_(cellular_automaton)}{Garden of Eden} - A \emph{Garden of Eden} pattern is a pattern with no ancestor patterns.
-                \item \href{https://en.wikipedia.org/wiki/Von_Neumann_neighborhood}{Von Neumann neighborhood}
-                \item \href{https://en.wikipedia.org/wiki/Moore_neighborhood}{Moore neighborhood}
         \end{itemize}
 
         % Patterns in cellular automata
-        % Might not be of direct interest, but idk
         \begin{itemize}
-                \item \href{https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton)}
+        \end{itemize}
+
+        \begin{itemize}
+                \item \href{https://en.wikipedia.org/wiki/Wireworld}{Wireworld (Wikipedia)} - Cellular automata that enables the building of wires and patterns mimicking electronic components such as transistors and diodes.
+                \item \href{https://en.wikipedia.org/wiki/Cyclic cellular automata}{Cyclic cellular automata} - A type of cellular automaton where each cell has a value in $\{0, \dots, N\}$, taking the value of any neighboring cell if they have the value $n+1 \% N$ where $n \eq \text{value of the current cell}$.
                 \item \href{https://en.wikipedia.org/wiki/Von_Neumann_universal_constructor} - A universal constructor designed in a cellular automata environment.
         \end{itemize}
 

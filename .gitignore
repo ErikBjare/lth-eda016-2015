@@ -1,5 +1,11 @@
 **/*.aux
 **/*.log
+**/*.nav
 **/*.out
+**/*.snm
+**/*.vrb
+**/*.synctex.gz
+**/*.toc
+**/*.class
 **/old
 *.swp
