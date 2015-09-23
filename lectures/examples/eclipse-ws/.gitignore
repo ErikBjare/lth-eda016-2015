@@ -1,0 +1,9 @@
+.project
+.metadata/**
+.recommenders
+bin/**
+tmp/**
+tmp/**/*
+.classpath
+.settings
+.loadpath
