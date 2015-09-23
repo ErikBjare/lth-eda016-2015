@@ -34,6 +34,7 @@ Many have contributed with input to lectures etc. Here is a list of some contrib
 * Torgny Roxå
 * Markus Borg
 * Anton Klarén
+* Erik Bjäreholt
 * ...
 
 
